@@ -3,7 +3,7 @@ use std::{fmt, panic::Location, str::FromStr};
 
 // The "waypoint" struct and its fields.
 // Each location in the overall $PATH is a waypoint.
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Waypoint {
     location: String,
     tags: Vec<String>,
@@ -48,4 +48,51 @@ pub fn path2waypoints(path: String) -> Vec<Waypoint> {
     path.split(":")
         .map(|location: &str| Waypoint::from_str(location).unwrap())
         .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_get_env_path() {
+        assert_eq!(get_env_path(), std::env::var("PATH").unwrap());
+    }
+
+    #[test]
+    fn test_path2locations() {
+        let path = "/usr/bin:/usr/local/bin:/bin".to_string();
+        let locations = vec![
+            "/usr/bin".to_string(),
+            "/usr/local/bin".to_string(),
+            "/bin".to_string(),
+        ];
+        assert_eq!(path2locations(path), locations);
+    }
+
+    #[test]
+    fn test_path2waypoints() {
+        let path = "/usr/bin:/usr/local/bin:/bin".to_string();
+        let waypoints = vec![
+            Waypoint {
+                location: "/usr/bin".to_string(),
+                tags: vec!["system".to_string()],
+                priority: 0,
+                active: true,
+            },
+            Waypoint {
+                location: "/usr/local/bin".to_string(),
+                tags: vec!["system".to_string()],
+                priority: 0,
+                active: true,
+            },
+            Waypoint {
+                location: "/bin".to_string(),
+                tags: vec!["system".to_string()],
+                priority: 0,
+                active: true,
+            },
+        ];
+        assert_eq!(path2waypoints(path), waypoints);
+    }
 }
