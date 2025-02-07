@@ -18,15 +18,15 @@ consumption.
 
 ```json
 {
-    "paths": [
+    "waypoints": [
         {
-            "path": "/usr/local/bin",
+            "location": "/usr/local/bin",
             "tags": ["system"],
             "priority": 1,
             "active": true
         },
         {
-            "path": "~/dev/tools/bin",
+            "location": "~/dev/tools/bin",
             "tags": ["dev", "local"],
             "priority": 2,
             "active": true,
@@ -60,7 +60,8 @@ eval "$(waypoint sync)"
 
 ## Version 1.0 Scope
 
-- [ ] Initial PATH parsing and JSON creation
+- [x] Initial PATH parsing and JSON serialization
+- [ ] Config file creation and parsing
 - [ ] Basic CRUD operations for paths
 - [ ] Path validation
 - [ ] Priority-based ordering
