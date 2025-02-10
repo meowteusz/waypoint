@@ -2,9 +2,8 @@
 
 ## Core Concept
 
-A PATH manager that stores paths in a structured JSON format with
-metadata, validates them, and generates the final PATH string for shell
-consumption.
+A PATH manager that stores paths in a structured JSON format with metadata,
+validates them, and generates the final PATH string for shell consumption.
 
 ## Key Features
 
@@ -43,19 +42,19 @@ consumption.
 ## Commands
 
 ```bash
-waypoint sync      # Generate PATH from JSON
-waypoint add       # Add new path with metadata
-waypoint remove    # Remove path
-waypoint tag       # Add/remove tags
+waypoint init      # Writes current $PATH into a waypoint config
+waypoint export    # Generate $PATH string from config
 waypoint list      # List paths (filterable)
-waypoint disable   # Toggle active status
+waypoint add       # Add new path interactively
+waypoint remove    # Remove path interactively
+waypoint edit      # Edit an existing path interactively
 ```
 
 ## Shell Integration
 
 ```bash
 # Add to .bashrc/.zshrc
-eval "$(waypoint sync)"
+eval "$(waypoint export)"
 ```
 
 ## Version 1.0 Scope
