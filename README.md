@@ -2,7 +2,7 @@
 
 ## Core Concept
 
-A bidirectional PATH manager that stores paths in a structured JSON format with
+A PATH manager that stores paths in a structured JSON format with
 metadata, validates them, and generates the final PATH string for shell
 consumption.
 
@@ -40,7 +40,7 @@ consumption.
 }
 ```
 
-## Core Commands
+## Commands
 
 ```bash
 waypoint sync      # Generate PATH from JSON
@@ -61,7 +61,7 @@ eval "$(waypoint sync)"
 ## Version 1.0 Scope
 
 - [x] Initial PATH parsing and JSON serialization
-- [ ] Config file creation and parsing
+- [x] Config file creation and parsing
 - [ ] Basic CRUD operations for paths
 - [ ] Path validation
 - [ ] Priority-based ordering

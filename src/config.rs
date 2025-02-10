@@ -14,45 +14,70 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new() -> Result<Self, Box<dyn Error>> {
-        let config_path = get_config_path()?;
-        let path_string: String = path::get_env_path();
+    pub fn init() -> Result<(), Box<dyn Error>> {
+        let config_path = get_config_path();
 
-        // If config file path does not exist, return a new Config struct
-        if !config_path.exists() {
-            fs::create_dir_all(config_path.parent().unwrap())?;
-
-            let config = Config {
-                path: path_string.clone(),
-                waypoints: path::path2waypoints(path_string),
-                metadata: HashMap::new(),
-            };
-
-            config.save()?;
-
-            return Ok(config);
-
+        if config_path.exists() {
+            return Err(format!("Config file already exists at {}!", config_path.display()).into());
         }
 
-        // All OK, read the config file
-        let data = fs::read_to_string(config_path)?;
-        Ok(serde_json::from_str(&data)?)
+        let path_string: String = path::get_env_path();
+
+        match fs::create_dir_all(match config_path.parent() {
+            Some(p) => p,
+            None => {
+                return Err(format!(
+                    "Couldn't get parent directory of config path: {}",
+                    config_path.display(),
+                )
+                .into())
+            }
+        }) {
+            Ok(_) => (),
+            Err(e) => {
+                println!("Error creating config directory: {}", e);
+                println!("Make sure the waypoint binary has RW access to the parent directory?");
+                return Err(e.into());
+            }
+        };
+
+        let config = Config {
+            path: path_string.clone(),
+            waypoints: path::path2waypoints(path_string),
+            metadata: HashMap::new(),
+        };
+
+        return match config.save() {
+            Ok(_) => {
+                println!("Config file created at {}", config_path.display());
+                Ok(())
+            }
+            Err(e) => Err(e.into()),
+        };
+    }
+
+    pub fn load() -> Result<Self, Box<dyn Error>> {
+        let config_path = get_config_path();
+
+        if config_path.exists() {
+            let data = fs::read_to_string(config_path)?;
+            Ok(serde_json::from_str(&data)?)
+        } else {
+            return Err("Config file not found. Try generating one with `waypoint init`?".into());
+        }
     }
 
     pub fn save(&self) -> Result<(), Box<dyn Error>> {
-        let config_path = get_config_path()?;
+        let config_path = get_config_path();
         let data = serde_json::to_string_pretty(self)?;
-        fs::write(config_path, data)?;
-        Ok(())
+
+        match fs::write(config_path, data) {
+            Ok(_) => Ok(()),
+            Err(e) => return Err(e.into()),
+        }
     }
 }
 
-pub fn get_config_path() -> Result<PathBuf, Box<dyn Error>> {
-    let home = std::env::var("HOME")?;
-    Ok(PathBuf::from(home).join(".config/waypoint/config.json"))
-}
-
-pub fn init() -> Result<(), Box<dyn Error>> {
-    Config::new()?;
-    Ok(())
+pub fn get_config_path() -> PathBuf {
+    PathBuf::from("~/.config/waypoint/config.json")
 }

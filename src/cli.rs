@@ -41,7 +41,7 @@ impl Cli {
             // }
             // Cli::Remove { path } => config::remove_path(path),
             // Cli::List { tag } => config::list_paths(tag),
-            Cli::Init => config::init(),
+            Cli::Init => config::Config::init(),
             _ => todo!(),
         }
     }
