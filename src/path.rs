@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use std::{fmt, panic::Location, str::FromStr};
+use std::{fmt, str::FromStr};
 
 // The "waypoint" struct and its fields.
 // Each location in the overall $PATH is a waypoint.
@@ -40,10 +40,6 @@ pub fn get_env_path() -> String {
     }
 }
 
-pub fn path2locations(path: String) -> Vec<String> {
-    path.split(":").map(String::from).collect()
-}
-
 pub fn path2waypoints(path: String) -> Vec<Waypoint> {
     path.split(":")
         .map(|location: &str| Waypoint::from_str(location).unwrap())
@@ -57,17 +53,6 @@ mod tests {
     #[test]
     fn test_get_env_path() {
         assert_eq!(get_env_path(), std::env::var("PATH").unwrap());
-    }
-
-    #[test]
-    fn test_path2locations() {
-        let path = "/usr/bin:/usr/local/bin:/bin".to_string();
-        let locations = vec![
-            "/usr/bin".to_string(),
-            "/usr/local/bin".to_string(),
-            "/bin".to_string(),
-        ];
-        assert_eq!(path2locations(path), locations);
     }
 
     #[test]
