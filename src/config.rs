@@ -49,11 +49,10 @@ impl Config {
 
 pub fn get_config_path() -> Result<PathBuf, Box<dyn Error>> {
     let home = std::env::var("HOME")?;
-    Ok(PathBuf::from(home).join(".config/waypoint/waypoint.json"))
+    Ok(PathBuf::from(home).join(".config/waypoint/config.json"))
 }
 
 pub fn init() -> Result<(), Box<dyn Error>> {
-    let config = Config::new()?;
-    config.save()?;
+    Config::new()?;
     Ok(())
 }
