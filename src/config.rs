@@ -79,5 +79,10 @@ impl Config {
 }
 
 pub fn get_config_path() -> PathBuf {
-    PathBuf::from("~/.config/waypoint/config.json")
+    let home = match std::env::var("HOME"){
+        Ok(val) => val,
+        Err(e) => format!("Couldn't interpret $HOME: {}", e),
+    };
+    
+    PathBuf::from(home).join(".config/waypoint/config.json")
 }
