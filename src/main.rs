@@ -1,9 +1,12 @@
+use clap::Parser;
+mod cli;
 mod config;
 mod path;
-fn main() {
-    let waypoints: Vec<path::Waypoint> = path::path2waypoints(path::get_env_path());
 
-    for waypoint in waypoints {
-        println!("{}", waypoint);
+fn main() {
+    let cli = cli::Cli::parse();
+    if let Err(e) = cli.execute() {
+        eprintln!("Error: {}", e);
+        std::process::exit(1);
     }
 }
