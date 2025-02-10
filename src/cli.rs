@@ -1,32 +1,32 @@
 use clap::Parser;
 use std::error::Error;
 
-use crate::{config, path};
+use crate::config;
 
 #[derive(Parser)]
 #[command(name = "waypoint")]
-#[command(about = "Intelligent PATH management")]
+#[command(about = "Ergonomic $PATH management")]
 pub enum Cli {
     #[command(
-        about = "Create initial configuration JSON at ~/.config/waypoint/config.json. Errors if file already exists."
+        about = "Create initial configuration JSON at ~/.config/waypoint/config.json. Errors if the file already exists"
     )]
     Init,
 
     #[command(
-        about = "Builds the current JSON config into a string that can be directly fed into $PATH."
+        about = "Builds the current JSON config into a string that can be directly fed into $PATH"
     )]
     Export,
 
-    #[command(about = "List all paths in JSON format.")]
+    #[command(about = "List all paths in JSON format")]
     List,
 
-    #[command(about = "Add a new path interactively.")]
+    #[command(about = "Add a new path interactively")]
     Add,
 
-    #[command(about = "Display an interactive list of paths to remove.")]
+    #[command(about = "Display an interactive list of paths to remove")]
     Remove,
 
-    #[command(about = "Display an interactive list of paths to edit.")]
+    #[command(about = "Display an interactive list of paths to edit")]
     Edit,
 }
 
@@ -39,12 +39,6 @@ impl Cli {
             Cli::Add => config::add_path(),
             Cli::Remove => config::remove_path(),
             Cli::Edit => config::edit_path(),
-            _ => unrecognized_command(),
         }
     }
-}
-
-fn unrecognized_command() -> Result<(), Box<dyn Error>> {
-    println!("Command not recognized!");
-    Ok(())
 }
