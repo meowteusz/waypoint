@@ -45,17 +45,25 @@ impl Cli {
 }
 
 pub fn export_path() -> Result<(), Box<dyn Error>> {
-    let config = config::Config::load()?;
+    let mut config = config::Config::load()?;
 
     let waypoints: Vec<path::Waypoint> = config.waypoints;
 
     let path_string = waypoints
         .iter()
-        .map(|w| w.location.clone())
+        .filter_map(|w| {
+            if w.active {
+                Some(w.location.clone())
+            } else {
+                None
+            }
+        })
         .collect::<Vec<String>>()
         .join(":");
 
-    println!("{}", path_string);
+    println!("{}", path_string.clone());
+
+    config.path = path_string;
 
     Ok(())
 }

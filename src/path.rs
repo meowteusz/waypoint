@@ -6,9 +6,9 @@ use std::{fmt, str::FromStr};
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Waypoint {
     pub location: String,
-    tags: Vec<String>,
-    priority: u32,
-    active: bool,
+    pub tags: Vec<String>,
+    pub priority: u32,
+    pub active: bool,
 }
 
 impl fmt::Display for Waypoint {
