@@ -14,7 +14,7 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn init() -> Result<(), Box<dyn Error>> {
+    pub fn freeze() -> Result<(), Box<dyn Error>> {
         let config_path = get_config_path();
 
         if config_path.exists() {

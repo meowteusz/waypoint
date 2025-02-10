@@ -9,9 +9,10 @@ use crate::path;
 #[command(about = "Ergonomic $PATH management")]
 pub enum Cli {
     #[command(
-        about = "Create initial configuration JSON at ~/.config/waypoint/config.json. Errors if the file already exists"
+        about = "Reads the $PATH as it exists at command runtime into the JSON config. 
+        Errors by default if the file already exists, but can be forced with --overwrite"
     )]
-    Init,
+    Freeze,
 
     #[command(
         about = "Builds the current JSON config into a string that can be directly fed into $PATH"
@@ -34,7 +35,7 @@ pub enum Cli {
 impl Cli {
     pub fn execute(self) -> Result<(), Box<dyn Error>> {
         match self {
-            Cli::Init => config::Config::init(),
+            Cli::Freeze => config::Config::freeze(),
             Cli::Export => export_path(),
             Cli::List => list_paths(),
             Cli::Add => add_path(),

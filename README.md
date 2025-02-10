@@ -39,7 +39,7 @@ validates them, and generates the final `$PATH` string for shell consumption.
 ## Commands
 
 ```bash
-waypoint init      # Snapshots current $PATH into a waypoint config
+waypoint freeze    # Snapshots current $PATH into a waypoint config
 waypoint export    # Generate $PATH string from config
 waypoint list      # List paths (filterable)
 waypoint add       # Add new path interactively
@@ -66,7 +66,7 @@ export PATH=$(waypoint export)
 - [ ] Priority-based ordering
 - [ ] Active/inactive toggling
 - [ ] Basic tag support
-- [ ] Shell integration
+- [x] Shell integration
 
 ## Future Considerations (Post 1.0)
 
