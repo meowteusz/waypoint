@@ -54,7 +54,13 @@ impl Cli {
 }
 
 pub fn export_path() -> Result<(), Box<dyn Error>> {
-    let mut config = config::Config::load()?;
+    let mut config = match config::Config::load() {
+        Ok(c) => c,
+        Err(e) => {
+            eprintln!("Error loading config: {}", e);
+            return Err(e);
+        }
+    };
 
     let waypoints: Vec<path::Waypoint> = config.waypoints;
 
@@ -78,7 +84,19 @@ pub fn export_path() -> Result<(), Box<dyn Error>> {
 }
 
 pub fn list_paths() -> Result<(), Box<dyn Error>> {
-    todo!()
+    let config = match config::Config::load() {
+        Ok(c) => c,
+        Err(e) => {
+            eprintln!("Error loading config: {}", e);
+            return Err(e);
+        }
+    };
+
+    let waypoints: Vec<path::Waypoint> = config.waypoints;
+
+    print!("{}", serde_json::to_string_pretty(&waypoints)?);
+
+    Ok(())
 }
 
 pub fn add_path() -> Result<(), Box<dyn Error>> {
