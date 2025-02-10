@@ -18,7 +18,7 @@ pub enum Commands {
         about = "Reads the $PATH as it exists at command runtime into the JSON config. Errors by default if the file already exists, but can be forced with --overwrite"
     )]
     Freeze {
-        #[arg[short, long]]
+        #[arg[long]]
         overwrite: bool,
     },
 
