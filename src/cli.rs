@@ -1,8 +1,13 @@
-use clap::{Args, Parser, Subcommand};
+use clap::{Parser, Subcommand};
+use inquire::{
+    error::InquireError,
+    ui::{Color, RenderConfig, Styled},
+    Editor, Select,
+};
 use std::error::Error;
 
 use crate::config;
-use crate::path;
+use crate::path::Waypoint;
 
 #[derive(Parser)]
 #[command(name = "waypoint")]
@@ -54,15 +59,8 @@ impl Cli {
 }
 
 pub fn export_path() -> Result<(), Box<dyn Error>> {
-    let mut config = match config::Config::load() {
-        Ok(c) => c,
-        Err(e) => {
-            eprintln!("Error loading config: {}", e);
-            return Err(e);
-        }
-    };
-
-    let waypoints: Vec<path::Waypoint> = config.waypoints;
+    let mut config = config::Config::load();
+    let waypoints: Vec<Waypoint> = config.waypoints;
 
     let path_string = waypoints
         .iter()
@@ -84,15 +82,8 @@ pub fn export_path() -> Result<(), Box<dyn Error>> {
 }
 
 pub fn list_paths() -> Result<(), Box<dyn Error>> {
-    let config = match config::Config::load() {
-        Ok(c) => c,
-        Err(e) => {
-            eprintln!("Error loading config: {}", e);
-            return Err(e);
-        }
-    };
-
-    let waypoints: Vec<path::Waypoint> = config.waypoints;
+    let config = config::Config::load();
+    let waypoints: Vec<Waypoint> = config.waypoints;
 
     print!("{}", serde_json::to_string_pretty(&waypoints)?);
 
@@ -108,5 +99,38 @@ pub fn remove_path() -> Result<(), Box<dyn Error>> {
 }
 
 pub fn edit_path() -> Result<(), Box<dyn Error>> {
-    todo!()
+    let config = config::Config::load();
+    let waypoints: Vec<Waypoint> = config.waypoints;
+
+    let ans: Result<Waypoint, InquireError> =
+        Select::new("Choose a waypoint to edit...", waypoints).prompt();
+
+    let choice = match ans {
+        Ok(choice) => choice,
+        Err(_) => {
+            println!("There was an error, please try again");
+            panic!();
+        }
+    };
+
+    let _description = Editor::new("JSON:")
+        .with_predefined_text(&choice.json())
+        .with_formatter(&|submission| {
+            let char_count = submission.chars().count();
+            if char_count == 0 {
+                String::from("<skipped>")
+            } else {
+                println!();
+                submission.into()
+            }
+        })
+        .with_render_config(description_render_config())
+        .prompt()?;
+
+    Ok(())
+}
+
+fn description_render_config() -> RenderConfig<'static> {
+    RenderConfig::default()
+        .with_canceled_prompt_indicator(Styled::new("<skipped>").with_fg(Color::DarkYellow))
 }

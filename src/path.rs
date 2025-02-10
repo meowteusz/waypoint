@@ -11,12 +11,22 @@ pub struct Waypoint {
     pub active: bool,
 }
 
+impl Waypoint {
+    pub fn json(&self) -> String {
+        match serde_json::to_string_pretty(self) {
+            Ok(json) => json,
+            Err(e) => format!("Couldn't serialize waypoint: {}", e),
+        }
+    }
+}
+
 impl fmt::Display for Waypoint {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match serde_json::to_string_pretty(self) {
-            Ok(json) => write!(f, "{}", json),
-            Err(e) => write!(f, "Couldn't serialize waypoint: {}", e),
-        }
+        write!(f, "{}", self.location)
+        // match serde_json::to_string_pretty(self) {
+        //     Ok(json) => write!(f, "{}", json),
+        //     Err(e) => write!(f, "Couldn't serialize waypoint: {}", e),
+        // }
     }
 }
 
