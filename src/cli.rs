@@ -2,6 +2,7 @@ use clap::Parser;
 use std::error::Error;
 
 use crate::config;
+use crate::path;
 
 #[derive(Parser)]
 #[command(name = "waypoint")]
@@ -34,11 +35,41 @@ impl Cli {
     pub fn execute(self) -> Result<(), Box<dyn Error>> {
         match self {
             Cli::Init => config::Config::init(),
-            Cli::Export => config::export_path(),
-            Cli::List => config::list_paths(),
-            Cli::Add => config::add_path(),
-            Cli::Remove => config::remove_path(),
-            Cli::Edit => config::edit_path(),
+            Cli::Export => export_path(),
+            Cli::List => list_paths(),
+            Cli::Add => add_path(),
+            Cli::Remove => remove_path(),
+            Cli::Edit => edit_path(),
         }
     }
+}
+
+pub fn export_path() -> Result<(), Box<dyn Error>> {
+    let config = config::Config::load()?;
+
+    let waypoints: Vec<path::Waypoint> = config.waypoints;
+
+    let path_string = waypoints
+        .iter()
+        .map(|w| w.location.clone())
+        .collect::<Vec<String>>()
+        .join(":");
+
+    Ok(())
+}
+
+pub fn list_paths() -> Result<(), Box<dyn Error>> {
+    todo!()
+}
+
+pub fn add_path() -> Result<(), Box<dyn Error>> {
+    todo!()
+}
+
+pub fn remove_path() -> Result<(), Box<dyn Error>> {
+    todo!()
+}
+
+pub fn edit_path() -> Result<(), Box<dyn Error>> {
+    todo!()
 }

@@ -5,7 +5,7 @@ use std::{fmt, str::FromStr};
 // Each location in the overall $PATH is a waypoint.
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Waypoint {
-    location: String,
+    pub location: String,
     tags: Vec<String>,
     priority: u32,
     active: bool,

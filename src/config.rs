@@ -8,9 +8,9 @@ use crate::path;
 
 #[derive(Serialize, Deserialize)]
 pub struct Config {
-    path: String,
-    waypoints: Vec<path::Waypoint>,
-    metadata: HashMap<String, String>,
+    pub path: String,
+    pub waypoints: Vec<path::Waypoint>,
+    pub metadata: HashMap<String, String>,
 }
 
 impl Config {
