@@ -1,4 +1,4 @@
-use clap::Parser;
+use clap::{Args, Parser, Subcommand};
 use std::error::Error;
 
 use crate::config;
@@ -7,12 +7,20 @@ use crate::path;
 #[derive(Parser)]
 #[command(name = "waypoint")]
 #[command(about = "Ergonomic $PATH management")]
-pub enum Cli {
+pub struct Cli {
+    #[command(subcommand)]
+    command: Commands,
+}
+
+#[derive(Subcommand)]
+pub enum Commands {
     #[command(
-        about = "Reads the $PATH as it exists at command runtime into the JSON config. 
-        Errors by default if the file already exists, but can be forced with --overwrite"
+        about = "Reads the $PATH as it exists at command runtime into the JSON config. Errors by default if the file already exists, but can be forced with --overwrite"
     )]
-    Freeze,
+    Freeze {
+        #[arg[short, long]]
+        overwrite: bool,
+    },
 
     #[command(
         about = "Builds the current JSON config into a string that can be directly fed into $PATH"
@@ -34,13 +42,13 @@ pub enum Cli {
 
 impl Cli {
     pub fn execute(self) -> Result<(), Box<dyn Error>> {
-        match self {
-            Cli::Freeze => config::Config::freeze(),
-            Cli::Export => export_path(),
-            Cli::List => list_paths(),
-            Cli::Add => add_path(),
-            Cli::Remove => remove_path(),
-            Cli::Edit => edit_path(),
+        match self.command {
+            Commands::Freeze { overwrite } => config::Config::freeze(overwrite),
+            Commands::Export => export_path(),
+            Commands::List => list_paths(),
+            Commands::Add => add_path(),
+            Commands::Remove => remove_path(),
+            Commands::Edit => edit_path(),
         }
     }
 }

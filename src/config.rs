@@ -14,10 +14,10 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn freeze() -> Result<(), Box<dyn Error>> {
+    pub fn freeze(overwrite: bool) -> Result<(), Box<dyn Error>> {
         let config_path = get_config_path();
 
-        if config_path.exists() {
+        if config_path.exists() && !overwrite {
             return Err(format!("Config file already exists at {}!", config_path.display()).into());
         }
 
@@ -79,10 +79,10 @@ impl Config {
 }
 
 pub fn get_config_path() -> PathBuf {
-    let home = match std::env::var("HOME"){
+    let home = match std::env::var("HOME") {
         Ok(val) => val,
         Err(e) => format!("Couldn't interpret $HOME: {}", e),
     };
-    
+
     PathBuf::from(home).join(".config/waypoint/config.json")
 }
