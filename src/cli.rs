@@ -55,6 +55,8 @@ pub fn export_path() -> Result<(), Box<dyn Error>> {
         .collect::<Vec<String>>()
         .join(":");
 
+    println!("{}", path_string);
+
     Ok(())
 }
 
