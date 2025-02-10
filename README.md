@@ -1,9 +1,7 @@
 # Waypoint - Ergonomic PATH Management
 
-## Core Concept
-
-A PATH manager that stores paths in a structured JSON format with metadata,
-validates them, and generates the final PATH string for shell consumption.
+A `$PATH` manager that stores paths in a structured JSON format with metadata,
+validates them, and generates the final `$PATH` string for shell consumption.
 
 ## Key Features
 
@@ -11,7 +9,7 @@ validates them, and generates the final PATH string for shell consumption.
 - JSON storage with path metadata (tags, priority, active status)
 - Shell-agnostic (works with bash, zsh, etc.)
 - Path validation (existence, permissions)
-- Simple command-line interface
+- Manage paths through TUI or directly edit file
 
 ## Data Structure
 
@@ -29,7 +27,6 @@ validates them, and generates the final PATH string for shell consumption.
             "tags": ["dev", "local"],
             "priority": 2,
             "active": true,
-            "comment": "Custom development tools"
         }
     ],
     "metadata": {
@@ -42,7 +39,7 @@ validates them, and generates the final PATH string for shell consumption.
 ## Commands
 
 ```bash
-waypoint init      # Writes current $PATH into a waypoint config
+waypoint init      # Snapshots current $PATH into a waypoint config
 waypoint export    # Generate $PATH string from config
 waypoint list      # List paths (filterable)
 waypoint add       # Add new path interactively
@@ -52,9 +49,12 @@ waypoint edit      # Edit an existing path interactively
 
 ## Shell Integration
 
+Waypoint is designed to manage *all* system PATHs, not just additions. Simply consolidating all your desired locations into one file and running `waypoint` will correctly build the PATH, following priority and active flags.
+
 ```bash
 # Add to .bashrc/.zshrc
-eval "$(waypoint export)"
+# Make sure to remove other $PATH modifiers
+export PATH=$(waypoint export)
 ```
 
 ## Version 1.0 Scope
