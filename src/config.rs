@@ -1,3 +1,4 @@
+use core::panic;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::error::Error;
@@ -56,14 +57,27 @@ impl Config {
         };
     }
 
-    pub fn load() -> Result<Self, Box<dyn Error>> {
+    pub fn load() -> Self {
         let config_path = get_config_path();
 
         if config_path.exists() {
-            let data = fs::read_to_string(config_path)?;
-            Ok(serde_json::from_str(&data)?)
+            let data = match fs::read_to_string(config_path) {
+                Ok(d) => d,
+                Err(e) => {
+                    eprintln!("Error reading config file: {}", e);
+                    panic!();
+                }
+            };
+            match serde_json::from_str(&data) {
+                Ok(j) => j,
+                Err(e) => {
+                    eprintln!("Error parsing config file: {}", e);
+                    panic!();
+                }
+            }
         } else {
-            return Err("Config file not found. Try generating one with `waypoint init`?".into());
+            eprintln!("Config file not found. Try generating one with `waypoint init`?");
+            panic!();
         }
     }
 
