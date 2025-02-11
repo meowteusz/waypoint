@@ -183,15 +183,13 @@ pub fn edit_path() -> Result<(), Box<dyn Error>> {
                 .find(|wp| wp.location.to_string() == location)
                 .ok_or("Waypoint not found")?;
 
-            let description = Editor::new("JSON:")
+            let description = Editor::new("JSON:\n")
                 .with_predefined_text(&waypoint.json())
                 .with_formatter(&|submission| {
                     let char_count = submission.chars().count();
                     if char_count == 0 {
                         String::from("<skipped>")
                     } else {
-                        println!("");
-                        println!("");
                         submission.into()
                     }
                 })
