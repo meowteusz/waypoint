@@ -167,9 +167,9 @@ pub fn edit_path() -> Result<(), Box<dyn Error>> {
 
     let choice = match ans {
         Ok(choice) => choice,
-        Err(_) => {
+        Err(e) => {
             println!("There was an error, please try again");
-            panic!();
+            return Err(Box::new(e));
         }
     };
 
