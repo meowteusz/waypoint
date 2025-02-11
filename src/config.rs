@@ -82,9 +82,6 @@ impl Config {
     }
 
     pub fn save(&mut self) -> Result<(), Box<dyn Error>> {
-        let config_path = get_config_path();
-        let data = serde_json::to_string_pretty(self)?;
-
         self.path = self
             .waypoints
             .iter()
@@ -98,9 +95,9 @@ impl Config {
             .collect::<Vec<String>>()
             .join(":");
 
-        match fs::write(config_path, data) {
+        match fs::write(get_config_path(), serde_json::to_string_pretty(self)?) {
             Ok(_) => Ok(()),
-            Err(e) => return Err(e.into()),
+            Err(e) => Err(e.into()),
         }
     }
 }

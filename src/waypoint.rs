@@ -32,7 +32,7 @@ impl FromStr for Waypoint {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(Waypoint {
             location: s.to_string(),
-            tags: vec!["system".to_string()],
+            tags: vec!["freeze".to_string()],
             priority: 0,
             active: true,
         })

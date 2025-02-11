@@ -190,7 +190,8 @@ pub fn edit_path() -> Result<(), Box<dyn Error>> {
                     if char_count == 0 {
                         String::from("<skipped>")
                     } else {
-                        println!("\n\n");
+                        println!("");
+                        println!("");
                         submission.into()
                     }
                 })
