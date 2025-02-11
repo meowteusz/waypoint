@@ -2,7 +2,7 @@ use clap::{Parser, Subcommand};
 use inquire::{
     error::InquireError,
     ui::{Color, RenderConfig, Styled},
-    Editor, Select,
+    Editor, Select, Text,
 };
 use std::error::Error;
 
@@ -85,13 +85,73 @@ pub fn list_paths() -> Result<(), Box<dyn Error>> {
     let config = config::Config::load();
     let waypoints: Vec<Waypoint> = config.waypoints;
 
-    print!("{}", serde_json::to_string_pretty(&waypoints)?);
+    println!("{}", serde_json::to_string_pretty(&waypoints)?);
 
     Ok(())
 }
 
 pub fn add_path() -> Result<(), Box<dyn Error>> {
-    todo!()
+    let mut config = config::Config::load();
+
+    let mut new_waypoint = Waypoint {
+        location: String::from(""),
+        tags: vec![],
+        priority: 0,
+        active: true,
+    };
+
+    let location = Text::new("Folder path: ").prompt();
+
+    match location {
+        Ok(location) => new_waypoint.location = location,
+        Err(e) => {
+            println!("Error adding location");
+            return Err(Box::new(e));
+        }
+    }
+
+    let tags = Text::new("Tags (comma separated): ").prompt();
+
+    match tags {
+        Ok(tags) => new_waypoint.tags = tags.split(",").map(|s| s.to_string()).collect(),
+        Err(e) => {
+            println!("Error adding tags");
+            return Err(Box::new(e));
+        }
+    }
+
+    let priority = Text::new("Priority: ").prompt();
+
+    match priority {
+        Ok(priority) => new_waypoint.priority = priority.parse().unwrap(),
+        Err(e) => {
+            println!("Error adding priority");
+            return Err(Box::new(e));
+        }
+    }
+
+    let active = Text::new("Active?: ").prompt();
+
+    match active {
+        Ok(active) => new_waypoint.active = active.parse().unwrap(),
+        Err(e) => {
+            println!("Error marking path active");
+            return Err(Box::new(e));
+        }
+    }
+
+    config.waypoints.push(new_waypoint);
+
+    match config.save() {
+        Ok(_) => {
+            println!("Config saved!");
+            return Ok(());
+        }
+        Err(e) => {
+            println!("Error saving config");
+            return Err(e);
+        }
+    }
 }
 
 pub fn remove_path() -> Result<(), Box<dyn Error>> {
