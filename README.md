@@ -61,7 +61,7 @@ export PATH=$(waypoint export)
 
 - [x] Initial PATH parsing and JSON serialization
 - [x] Config file creation and parsing
-- [ ] Basic CRUD operations for paths
+- [x] Basic CRUD operations for paths
 - [ ] Path validation
 - [ ] Priority-based ordering
 - [ ] Active/inactive toggling
