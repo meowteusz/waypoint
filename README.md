@@ -61,12 +61,13 @@ export PATH=$(waypoint export)
 
 - [x] Initial PATH parsing and JSON serialization
 - [x] Config file creation and parsing
-- [x] Basic CRUD operations for paths
-- [ ] Path validation
-- [ ] Priority-based ordering
-- [ ] Active/inactive toggling
-- [ ] Basic tag support
 - [x] Shell integration
+- [x] Basic CRUD operations for paths
+- [ ] Active/inactive toggling
+- [ ] Add CWD to path
+- [ ] Basic tag support
+- [ ] Priority-based ordering
+- [ ] Path validation
 
 ## Future Considerations (Post 1.0)
 
