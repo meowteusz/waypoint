@@ -6,8 +6,7 @@ use inquire::{
 };
 use std::error::Error;
 
-use crate::config;
-use crate::waypoint::Waypoint;
+use crate::{config, waypoint::Waypoint};
 
 #[derive(Parser)]
 #[command(name = "waypoint")]
@@ -165,35 +164,51 @@ pub fn remove_path() -> Result<(), Box<dyn Error>> {
 }
 
 pub fn edit_path() -> Result<(), Box<dyn Error>> {
-    let config = config::Config::load();
-    let waypoints: Vec<Waypoint> = config.waypoints;
+    let mut config = config::Config::load();
 
-    let ans: Result<Waypoint, InquireError> =
-        Select::new("Choose a waypoint to edit...", waypoints).prompt();
+    let locations: Vec<String> = config
+        .waypoints
+        .iter()
+        .map(|w| w.location.clone())
+        .collect();
 
-    let choice = match ans {
-        Ok(choice) => choice,
+    let target: Result<String, InquireError> =
+        Select::new("Choose a waypoint to edit...", locations).prompt();
+
+    match target {
+        Ok(location) => {
+            let waypoint = config
+                .waypoints
+                .iter_mut()
+                .find(|wp| wp.location.to_string() == location)
+                .ok_or("Waypoint not found")?;
+
+            let description = Editor::new("JSON:")
+                .with_predefined_text(&waypoint.json())
+                .with_formatter(&|submission| {
+                    let char_count = submission.chars().count();
+                    if char_count == 0 {
+                        String::from("<skipped>")
+                    } else {
+                        println!("\n\n");
+                        submission.into()
+                    }
+                })
+                .with_render_config(description_render_config())
+                .prompt()?;
+
+            if description != "<skipped>" {
+                *waypoint = serde_json::from_str(&description)?;
+                config.save()?;
+            }
+
+            return Ok(());
+        }
         Err(e) => {
             println!("There was an error, please try again");
             return Err(Box::new(e));
         }
     };
-
-    let _description = Editor::new("JSON:")
-        .with_predefined_text(&choice.json())
-        .with_formatter(&|submission| {
-            let char_count = submission.chars().count();
-            if char_count == 0 {
-                String::from("<skipped>")
-            } else {
-                println!();
-                submission.into()
-            }
-        })
-        .with_render_config(description_render_config())
-        .prompt()?;
-
-    Ok(())
 }
 
 fn description_render_config() -> RenderConfig<'static> {
