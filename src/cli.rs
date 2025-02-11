@@ -60,9 +60,9 @@ impl Cli {
 
 pub fn export_path() -> Result<(), Box<dyn Error>> {
     let mut config = config::Config::load();
-    let waypoints: Vec<Waypoint> = config.waypoints;
 
-    let path_string = waypoints
+    let path_string = config
+        .waypoints
         .iter()
         .filter_map(|w| {
             if w.active {
@@ -74,11 +74,20 @@ pub fn export_path() -> Result<(), Box<dyn Error>> {
         .collect::<Vec<String>>()
         .join(":");
 
-    println!("{}", path_string.clone());
+    println!("{}", path_string);
 
     config.path = path_string;
 
-    Ok(())
+    match config.save() {
+        Ok(_) => {
+            println!("Config saved!");
+            Ok(())
+        }
+        Err(e) => {
+            println!("Error saving config");
+            return Err(e);
+        }
+    }
 }
 
 pub fn list_paths() -> Result<(), Box<dyn Error>> {
