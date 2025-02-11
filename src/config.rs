@@ -42,7 +42,7 @@ impl Config {
             }
         };
 
-        let config = Config {
+        let mut config = Config {
             path: path_string.clone(),
             waypoints: waypoint::path2waypoints(path_string),
             metadata: HashMap::new(),
@@ -81,9 +81,22 @@ impl Config {
         }
     }
 
-    pub fn save(&self) -> Result<(), Box<dyn Error>> {
+    pub fn save(&mut self) -> Result<(), Box<dyn Error>> {
         let config_path = get_config_path();
         let data = serde_json::to_string_pretty(self)?;
+
+        self.path = self
+            .waypoints
+            .iter()
+            .filter_map(|w| {
+                if w.active {
+                    Some(w.location.clone())
+                } else {
+                    None
+                }
+            })
+            .collect::<Vec<String>>()
+            .join(":");
 
         match fs::write(config_path, data) {
             Ok(_) => Ok(()),

@@ -59,35 +59,11 @@ impl Cli {
 }
 
 pub fn export_path() -> Result<(), Box<dyn Error>> {
-    let mut config = config::Config::load();
+    let config = config::Config::load();
 
-    let path_string = config
-        .waypoints
-        .iter()
-        .filter_map(|w| {
-            if w.active {
-                Some(w.location.clone())
-            } else {
-                None
-            }
-        })
-        .collect::<Vec<String>>()
-        .join(":");
+    println!("{}", config.path);
 
-    println!("{}", path_string);
-
-    config.path = path_string;
-
-    match config.save() {
-        Ok(_) => {
-            println!("Config saved!");
-            Ok(())
-        }
-        Err(e) => {
-            println!("Error saving config");
-            return Err(e);
-        }
-    }
+    Ok(())
 }
 
 pub fn list_paths() -> Result<(), Box<dyn Error>> {
