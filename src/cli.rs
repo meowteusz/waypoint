@@ -155,7 +155,28 @@ pub fn add_path() -> Result<(), Box<dyn Error>> {
 }
 
 pub fn remove_path() -> Result<(), Box<dyn Error>> {
-    todo!()
+    let mut config = config::Config::load();
+
+    let locations: Vec<String> = config
+        .waypoints
+        .iter()
+        .map(|w| w.location.clone())
+        .collect();
+
+    let selected_location = Select::new("Choose a waypoint to remove...", locations).prompt()?;
+
+    config.waypoints.retain(|x| x.location != selected_location);
+
+    match config.save() {
+        Ok(_) => {
+            println!("Waypoint removed!");
+            Ok(())
+        }
+        Err(e) => {
+            println!("Could not save config!");
+            Err(e)
+        }
+    }
 }
 
 pub fn edit_path() -> Result<(), Box<dyn Error>> {

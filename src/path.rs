@@ -23,10 +23,6 @@ impl Waypoint {
 impl fmt::Display for Waypoint {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.location)
-        // match serde_json::to_string_pretty(self) {
-        //     Ok(json) => write!(f, "{}", json),
-        //     Err(e) => write!(f, "Couldn't serialize waypoint: {}", e),
-        // }
     }
 }
 
