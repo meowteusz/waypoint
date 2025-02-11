@@ -7,7 +7,7 @@ use inquire::{
 use std::error::Error;
 
 use crate::config;
-use crate::path::Waypoint;
+use crate::waypoint::Waypoint;
 
 #[derive(Parser)]
 #[command(name = "waypoint")]

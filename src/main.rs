@@ -2,7 +2,7 @@ use clap::Parser;
 
 mod cli;
 mod config;
-mod path;
+mod waypoint;
 
 fn main() {
     let cli = cli::Cli::parse();

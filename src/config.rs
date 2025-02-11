@@ -5,12 +5,12 @@ use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
 
-use crate::path;
+use crate::waypoint;
 
 #[derive(Serialize, Deserialize)]
 pub struct Config {
     pub path: String,
-    pub waypoints: Vec<path::Waypoint>,
+    pub waypoints: Vec<waypoint::Waypoint>,
     pub metadata: HashMap<String, String>,
 }
 
@@ -22,7 +22,7 @@ impl Config {
             return Err(format!("Config file already exists at {}!", config_path.display()).into());
         }
 
-        let path_string: String = path::get_env_path();
+        let path_string: String = waypoint::get_env_path();
 
         match fs::create_dir_all(match config_path.parent() {
             Some(p) => p,
@@ -44,7 +44,7 @@ impl Config {
 
         let config = Config {
             path: path_string.clone(),
-            waypoints: path::path2waypoints(path_string),
+            waypoints: waypoint::path2waypoints(path_string),
             metadata: HashMap::new(),
         };
 
