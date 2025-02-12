@@ -63,8 +63,8 @@ export PATH=$(waypoint export)
 - [x] Config file creation and parsing
 - [x] Shell integration
 - [x] Basic CRUD operations for paths
-- [ ] Active/inactive toggling
-- [ ] Add CWD to path
+- [ ] Waypoint active/inactive toggle
+- [x] Add CWD to path
 - [ ] Basic tag support
 - [ ] Priority-based ordering
 - [ ] Path validation
