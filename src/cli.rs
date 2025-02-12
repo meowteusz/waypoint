@@ -4,7 +4,9 @@ use inquire::{
     ui::{Color, RenderConfig, Styled},
     Editor, Select, Text,
 };
+
 use std::error::Error;
+use std::path::PathBuf;
 
 use crate::{config, waypoint::Waypoint};
 
@@ -35,7 +37,7 @@ pub enum Commands {
     List,
 
     #[command(about = "Add a new path interactively")]
-    Add,
+    Add { path: Option<PathBuf> },
 
     #[command(about = "Display an interactive list of paths to remove")]
     Remove,
@@ -50,7 +52,7 @@ impl Cli {
             Commands::Freeze { overwrite } => config::Config::freeze(overwrite),
             Commands::Export => export_path(),
             Commands::List => list_paths(),
-            Commands::Add => add_path(),
+            Commands::Add { path } => add_path(path),
             Commands::Remove => remove_path(),
             Commands::Edit => edit_path(),
         }
@@ -74,7 +76,7 @@ pub fn list_paths() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-pub fn add_path() -> Result<(), Box<dyn Error>> {
+pub fn add_path(path: Option<PathBuf>) -> Result<(), Box<dyn Error>> {
     let mut config = config::Config::load();
 
     let mut new_waypoint = Waypoint {
@@ -84,13 +86,29 @@ pub fn add_path() -> Result<(), Box<dyn Error>> {
         active: true,
     };
 
-    let location = Text::new("Folder path: ").prompt();
+    match path {
+        Some(path) => {
+            let parsed = path.canonicalize()?.to_str().unwrap().to_string();
 
-    match location {
-        Ok(location) => new_waypoint.location = location,
-        Err(e) => {
-            println!("Error adding location");
-            return Err(Box::new(e));
+            println!("Folder path: {}", parsed);
+            new_waypoint.location = parsed;
+        }
+        None => {
+            let ans = Text::new("Folder path: ").prompt();
+
+            match ans {
+                Ok(parsed) => {
+                    new_waypoint.location = PathBuf::from(parsed)
+                        .canonicalize()?
+                        .to_str()
+                        .unwrap()
+                        .to_string()
+                }
+                Err(e) => {
+                    println!("Error adding location");
+                    return Err(Box::new(e));
+                }
+            }
         }
     }
 
