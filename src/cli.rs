@@ -90,28 +90,42 @@ pub fn add_path(path: Option<PathBuf>) -> Result<(), Box<dyn Error>> {
 
     match path {
         Some(path) => {
-            let parsed = path.canonicalize()?.to_str().unwrap().to_string();
+            let candidate: String;
 
-            println!("Folder path: {}", parsed);
-            new_waypoint.location = parsed;
-        }
-        None => {
-            let ans = Text::new("Folder path: ").prompt();
-
-            match ans {
-                Ok(parsed) => {
-                    new_waypoint.location = PathBuf::from(parsed)
-                        .canonicalize()?
-                        .to_str()
-                        .unwrap()
-                        .to_string()
-                }
-                Err(e) => {
-                    println!("Error adding location");
-                    return Err(Box::new(e));
-                }
+            if path.exists() {
+                candidate = path.canonicalize()?.to_str().unwrap().to_string();
+                println!("Folder path: {}", candidate);
+                new_waypoint.location = candidate;
+            } else {
+                println!("Path does not exist, how are you even in this folder?");
+                return Err(Box::new(std::io::Error::new(
+                    std::io::ErrorKind::NotFound,
+                    "Path does not exist",
+                )));
             }
         }
+        None => match Text::new("Folder path: ").prompt() {
+            Ok(ans) => {
+                let candidate: String;
+                let path = PathBuf::from(ans);
+
+                if path.exists() {
+                    candidate = path.canonicalize()?.to_str().unwrap().to_string();
+                    println!("Folder path: {}", candidate);
+                    new_waypoint.location = candidate;
+                } else {
+                    println!("Path does not exist");
+                    return Err(Box::new(std::io::Error::new(
+                        std::io::ErrorKind::NotFound,
+                        "Path does not exist",
+                    )));
+                }
+            }
+            Err(e) => {
+                println!("Error adding location");
+                return Err(Box::new(e));
+            }
+        },
     }
 
     let tags = Text::new("Tags (comma separated): ").prompt();

@@ -67,7 +67,7 @@ export PATH=$(waypoint export)
 - [x] Add CWD to path
 - [ ] Basic tag support
 - [x] Priority-based ordering
-- [ ] Path validation
+- [x] Path validation
 
 ## Future Considerations (Post 1.0)
 
