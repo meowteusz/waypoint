@@ -82,16 +82,17 @@ impl Config {
     }
 
     pub fn save(&mut self) -> Result<(), Box<dyn Error>> {
-        self.path = self
+        let mut active_waypoints: Vec<_> = self
             .waypoints
             .iter()
-            .filter_map(|w| {
-                if w.active {
-                    Some(w.location.clone())
-                } else {
-                    None
-                }
-            })
+            .filter(|w| w.active)
+            .collect();
+
+        active_waypoints.sort_by_key(|w| w.priority);
+
+        self.path = active_waypoints
+            .iter()
+            .map(|w| w.location.clone())
             .collect::<Vec<String>>()
             .join(":");
 

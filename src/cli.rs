@@ -69,7 +69,9 @@ pub fn export_path() -> Result<(), Box<dyn Error>> {
 
 pub fn list_paths() -> Result<(), Box<dyn Error>> {
     let config = config::Config::load();
-    let waypoints: Vec<Waypoint> = config.waypoints;
+    let mut waypoints: Vec<Waypoint> = config.waypoints;
+
+    waypoints.sort_by_key(|item| item.priority);
 
     println!("{}", serde_json::to_string_pretty(&waypoints)?);
 

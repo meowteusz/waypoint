@@ -7,7 +7,7 @@ use std::{fmt, str::FromStr};
 pub struct Waypoint {
     pub location: String,
     pub tags: Vec<String>,
-    pub priority: u32,
+    pub priority: i32,
     pub active: bool,
 }
 
