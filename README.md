@@ -8,13 +8,14 @@ validates them, and generates the final `$PATH` string for shell consumption.
 - Single source of truth: Manages entire PATH, not just user additions
 - JSON storage with path metadata (tags, priority, active status)
 - Shell-agnostic (works with bash, zsh, etc.)
-- Path validation (existence, permissions)
+- Path validation
 - Manage paths through TUI or directly edit file
 
 ## Data Structure
 
 ```json
 {
+    "path": "your/whole/system:/path/gets/placed:/here/for/ease/of/access",
     "waypoints": [
         {
             "location": "/usr/local/bin",
@@ -26,7 +27,7 @@ validates them, and generates the final `$PATH` string for shell consumption.
             "location": "~/dev/tools/bin",
             "tags": ["dev", "local"],
             "priority": 2,
-            "active": true,
+            "active": true
         }
     ],
     "metadata": {
@@ -49,7 +50,9 @@ waypoint edit      # Edit an existing path interactively
 
 ## Shell Integration
 
-Waypoint is designed to manage *all* system PATHs, not just additions. Simply consolidating all your desired locations into one file and running `waypoint` will correctly build the PATH, following priority and active flags.
+Waypoint is designed to manage _all_ system PATHs, not just additions. Simply
+consolidating all your desired locations into one file and running `waypoint`
+will correctly build the PATH, following priority and active flags.
 
 ```bash
 # Add to .bashrc/.zshrc
@@ -71,8 +74,6 @@ export PATH=$(waypoint export)
 
 ## Future Considerations (Post 1.0)
 
-- Path conflict detection
-- Permission validation
-- Multiple profiles
-- Import/export functionality
-- TUI/Web interface
+- [ ] Rewrite entire JSON system to support custom structure
+- [ ] Path conflict detection
+- [ ] Permission validation

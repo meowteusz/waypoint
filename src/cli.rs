@@ -34,7 +34,7 @@ pub enum Commands {
     Export,
 
     #[command(about = "List all paths in JSON format")]
-    List,
+    List { tag: Option<String> },
 
     #[command(about = "Add a new path interactively")]
     Add { path: Option<PathBuf> },
@@ -51,7 +51,7 @@ impl Cli {
         match self.command {
             Commands::Freeze { overwrite } => config::Config::freeze(overwrite),
             Commands::Export => export_path(),
-            Commands::List => list_paths(),
+            Commands::List { tag } => list_paths(tag),
             Commands::Add { path } => add_path(path),
             Commands::Remove => remove_path(),
             Commands::Edit => edit_path(),
@@ -67,9 +67,16 @@ pub fn export_path() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-pub fn list_paths() -> Result<(), Box<dyn Error>> {
+pub fn list_paths(tag: Option<String>) -> Result<(), Box<dyn Error>> {
     let config = config::Config::load();
     let mut waypoints: Vec<Waypoint> = config.waypoints;
+
+    if let Some(tag) = tag {
+        waypoints = waypoints
+            .into_iter()
+            .filter(|w| w.tags.contains(&tag))
+            .collect();
+    }
 
     waypoints.sort_by_key(|item| item.priority);
 
