@@ -67,19 +67,19 @@ mod tests {
         let waypoints = vec![
             Waypoint {
                 location: "/usr/bin".to_string(),
-                tags: vec!["system".to_string()],
+                tags: vec!["freeze".to_string()],
                 priority: 0,
                 active: true,
             },
             Waypoint {
                 location: "/usr/local/bin".to_string(),
-                tags: vec!["system".to_string()],
+                tags: vec!["freeze".to_string()],
                 priority: 0,
                 active: true,
             },
             Waypoint {
                 location: "/bin".to_string(),
-                tags: vec!["system".to_string()],
+                tags: vec!["freeze".to_string()],
                 priority: 0,
                 active: true,
             },

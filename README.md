@@ -1,7 +1,10 @@
 # Waypoint - Ergonomic PATH Management
 
-A `$PATH` manager that stores paths in a structured JSON format with metadata,
-validates them, and generates the final `$PATH` string for shell consumption.
+A `$PATH` manager that stores paths in a more easily readable and shareable JSON format. Paths
+are validated before addition to the file, and can be tagged, activated, and ordered by priority.
+A future release will allow for custom JSON format simply by editing the JSON file (with the core
+three staying as location, priority, and active).
+
 
 ## Key Features
 
@@ -68,7 +71,7 @@ export PATH=$(waypoint export)
 - [x] Basic CRUD operations for paths
 - [ ] ~~Waypoint active/inactive toggle~~ Use editor
 - [x] Add CWD to path
-- [ ] Basic tag support
+- [x] Basic tag support
 - [x] Priority-based ordering
 - [x] Path validation
 
